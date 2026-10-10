@@ -1,0 +1,66 @@
+"distribution","n","pop_shape","theo_mean","sim_mean","mean_bias","theo_se","sim_se","se_ratio","skewness","excess_kurtosis","shapiro_stat_W","shapiro_p_value"
+"Standard Normal",1,"Continuous, symmetric, bell-shaped",0,0.014,0.014,1,1.0129,1.0129,-0.0059,-0.0278,0.9998,0.95551
+"Standard Normal",5,"Continuous, symmetric, bell-shaped",0,-0.001,-0.001,0.4472,0.4506,1.0077,0.0145,0.0596,0.9994,0.1095
+"Standard Normal",10,"Continuous, symmetric, bell-shaped",0,9e-04,9e-04,0.3162,0.3166,1.0013,0.0314,0.0266,0.9994,0.12111
+"Standard Normal",15,"Continuous, symmetric, bell-shaped",0,2e-04,2e-04,0.2582,0.262,1.0146,0.0081,-0.0326,0.9997,0.65538
+"Standard Normal",20,"Continuous, symmetric, bell-shaped",0,-7e-04,-7e-04,0.2236,0.2244,1.0037,0.0277,0.0437,0.9998,0.97489
+"Standard Normal",25,"Continuous, symmetric, bell-shaped",0,0.001,0.001,0.2,0.2018,1.0089,-0.0259,-0.0348,0.9997,0.57169
+"Standard Normal",30,"Continuous, symmetric, bell-shaped",0,-4e-04,-4e-04,0.1826,0.1833,1.0038,-0.0182,4e-04,0.9997,0.67643
+"Standard Normal",40,"Continuous, symmetric, bell-shaped",0,-0.0016,-0.0016,0.1581,0.1588,1.0042,-0.0322,-0.0133,0.9993,0.04279
+"Standard Normal",50,"Continuous, symmetric, bell-shaped",0,-9e-04,-9e-04,0.1414,0.1416,1.0012,-0.0599,0.0533,0.9992,0.025
+"Standard Normal",75,"Continuous, symmetric, bell-shaped",0,-3e-04,-3e-04,0.1155,0.1157,1.0017,-0.0375,-0.0666,0.9996,0.46728
+"Standard Normal",100,"Continuous, symmetric, bell-shaped",0,0.0015,0.0015,0.1,0.0995,0.9947,-0.0309,0.0492,0.9993,0.04158
+"Standard Normal",150,"Continuous, symmetric, bell-shaped",0,3e-04,3e-04,0.0816,0.0819,1.0026,0.007,-0.1049,0.9996,0.35534
+"Standard Normal",200,"Continuous, symmetric, bell-shaped",0,0,0,0.0707,0.0689,0.9744,-0.0287,-0.0651,0.9994,0.12563
+"Six-Sided Die",1,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.4957,-0.0043,1.7078,1.7096,1.0011,-7e-04,-1.2788,0.9051,0
+"Six-Sided Die",5,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5015,0.0015,0.7638,0.7654,1.0021,0.0409,-0.2514,0.9936,0
+"Six-Sided Die",10,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.4976,-0.0024,0.5401,0.5461,1.0112,0.0227,-0.1369,0.9966,0
+"Six-Sided Die",15,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5052,0.0052,0.441,0.4392,0.9961,0.0164,-0.111,0.9976,0
+"Six-Sided Die",20,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5016,0.0016,0.3819,0.3828,1.0025,0.0158,-0.0755,0.9984,5e-05
+"Six-Sided Die",25,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.4962,-0.0038,0.3416,0.3404,0.9966,0.0042,-0.0907,0.9984,8e-05
+"Six-Sided Die",30,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.502,0.002,0.3118,0.3133,1.0047,-0.0269,-0.0198,0.9985,0.00013
+"Six-Sided Die",40,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.4992,-8e-04,0.27,0.272,1.0075,-0.0251,0.0019,0.9991,0.0104
+"Six-Sided Die",50,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5012,0.0012,0.2415,0.2396,0.9919,-0.0343,-0.0297,0.9991,0.00863
+"Six-Sided Die",75,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.498,-0.002,0.1972,0.1966,0.9971,0.0252,-0.0668,0.9992,0.02632
+"Six-Sided Die",100,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5018,0.0017,0.1708,0.172,1.0069,-0.0217,0.0411,0.9994,0.12242
+"Six-Sided Die",150,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5017,0.0017,0.1394,0.1392,0.9979,0.0323,-0.0723,0.9994,0.10207
+"Six-Sided Die",200,"Discrete uniform on {1, 2, 3, 4, 5, 6}, symmetric",3.5,3.5008,8e-04,0.1208,0.1212,1.004,0.0077,-0.0122,0.9996,0.37882
+"Exponential",1,"Continuous, heavily right-skewed, strictly positive",1,0.9942,-0.0058,1,0.9869,0.9869,1.8862,4.973,0.8164,0
+"Exponential",5,"Continuous, heavily right-skewed, strictly positive",1,1.0063,0.0063,0.4472,0.4508,1.008,0.8611,1.084,0.9576,0
+"Exponential",10,"Continuous, heavily right-skewed, strictly positive",1,1.0007,7e-04,0.3162,0.3152,0.9969,0.6528,0.6303,0.9786,0
+"Exponential",15,"Continuous, heavily right-skewed, strictly positive",1,0.9964,-0.0036,0.2582,0.2567,0.9943,0.463,0.2582,0.9895,0
+"Exponential",20,"Continuous, heavily right-skewed, strictly positive",1,1.0011,0.0011,0.2236,0.2229,0.9968,0.4792,0.4018,0.9867,0
+"Exponential",25,"Continuous, heavily right-skewed, strictly positive",1,1.003,0.003,0.2,0.197,0.985,0.4145,0.2638,0.9911,0
+"Exponential",30,"Continuous, heavily right-skewed, strictly positive",1,0.999,-0.001,0.1826,0.1812,0.9926,0.3418,0.0574,0.9914,0
+"Exponential",40,"Continuous, heavily right-skewed, strictly positive",1,1,0,0.1581,0.1563,0.9885,0.3205,0.1661,0.9956,0
+"Exponential",50,"Continuous, heavily right-skewed, strictly positive",1,1.0004,4e-04,0.1414,0.1415,1.0004,0.3185,0.1629,0.9942,0
+"Exponential",75,"Continuous, heavily right-skewed, strictly positive",1,1.0006,6e-04,0.1155,0.1156,1.0007,0.258,0.082,0.9972,0
+"Exponential",100,"Continuous, heavily right-skewed, strictly positive",1,1.0003,3e-04,0.1,0.0995,0.9952,0.1772,-0.0223,0.9982,2e-05
+"Exponential",150,"Continuous, heavily right-skewed, strictly positive",1,0.9998,-2e-04,0.0816,0.0816,0.9994,0.1602,0.0349,0.9974,0
+"Exponential",200,"Continuous, heavily right-skewed, strictly positive",1,1.0002,2e-04,0.0707,0.0704,0.9962,0.128,-0.006,0.9988,0.00097
+"R-Binomial",1,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.4973,-0.0027,0.6708,0.6746,1.0056,1.1994,0.9212,0.7077,0
+"R-Binomial",5,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5016,0.0016,0.3,0.3022,1.0074,0.5686,0.3367,0.9417,0
+"R-Binomial",10,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5,0,0.2121,0.2092,0.9861,0.3418,0.0833,0.973,0
+"R-Binomial",15,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5015,0.0015,0.1732,0.1735,1.0015,0.3003,0.0602,0.9821,0
+"R-Binomial",20,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.4998,-2e-04,0.15,0.1497,0.9981,0.2257,0.026,0.9864,0
+"R-Binomial",25,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.499,-0.001,0.1342,0.1349,1.0053,0.2118,-0.004,0.9896,0
+"R-Binomial",30,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5002,2e-04,0.1225,0.122,0.9961,0.2286,0.107,0.9898,0
+"R-Binomial",40,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5007,7e-04,0.1061,0.1068,1.0065,0.1741,0.0722,0.9932,0
+"R-Binomial",50,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5004,4e-04,0.0949,0.0932,0.9826,0.1646,0.0179,0.9936,0
+"R-Binomial",75,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5002,2e-04,0.0775,0.0781,1.0082,0.1368,0.0164,0.9966,0
+"R-Binomial",100,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5006,6e-04,0.0671,0.0666,0.9933,0.1483,-0.0886,0.9964,0
+"R-Binomial",150,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.5006,6e-04,0.0548,0.0553,1.0093,0.1338,-0.0129,0.9981,1e-05
+"R-Binomial",200,"Discrete, unimodal, moderately right-skewed (p = 0.3)",0.5,0.4999,-1e-04,0.0474,0.0474,0.9984,0.0912,-0.0115,0.9989,0.00168
+"Cauchy",1,"Continuous, symmetric, extremely heavy-tailed",NA,-10.8055,NA,NA,2147.8451,NA,-80.2582,7995.8888,0.0035,0
+"Cauchy",5,"Continuous, symmetric, extremely heavy-tailed",NA,-0.577,NA,NA,101.8698,NA,-47.9091,4465.3292,0.0518,0
+"Cauchy",10,"Continuous, symmetric, extremely heavy-tailed",NA,11.4403,NA,NA,1105.0424,NA,99.5462,9936.3451,0.0038,0
+"Cauchy",15,"Continuous, symmetric, extremely heavy-tailed",NA,-5.5454,NA,NA,310.8646,NA,-57.8217,3427.4722,0.0858,0
+"Cauchy",20,"Continuous, symmetric, extremely heavy-tailed",NA,7.0135,NA,NA,631.5725,NA,97.8912,9715.9343,0.045,0
+"Cauchy",25,"Continuous, symmetric, extremely heavy-tailed",NA,1.0585,NA,NA,368.6466,NA,78.3265,7731.6085,0.008,0
+"Cauchy",30,"Continuous, symmetric, extremely heavy-tailed",NA,0.9871,NA,NA,133.3929,NA,67.4919,6586.7564,0.0171,0
+"Cauchy",40,"Continuous, symmetric, extremely heavy-tailed",NA,-2.1222,NA,NA,141.8028,NA,-58.3368,3749.6064,0.0153,0
+"Cauchy",50,"Continuous, symmetric, extremely heavy-tailed",NA,-3.3053,NA,NA,374.9337,NA,-80.3996,7689.5091,0.0089,0
+"Cauchy",75,"Continuous, symmetric, extremely heavy-tailed",NA,-0.5738,NA,NA,46.4371,NA,-23.8102,1335.9266,0.0732,0
+"Cauchy",100,"Continuous, symmetric, extremely heavy-tailed",NA,-1.4453,NA,NA,178.0199,NA,-95.4238,9394.8644,0.1089,0
+"Cauchy",150,"Continuous, symmetric, extremely heavy-tailed",NA,0.3795,NA,NA,37.6678,NA,13.9508,946.5338,0.1009,0
+"Cauchy",200,"Continuous, symmetric, extremely heavy-tailed",NA,0.9988,NA,NA,123.8316,NA,44.8849,4286.4406,0.0256,0
