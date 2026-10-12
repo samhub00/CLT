@@ -15,8 +15,151 @@ like the Q-Q plot.
 - R-Binomial `rbinom()`
 - Cauchy `rcauchy()`
 
-### Bonus Distributions
-- Dependent Machine Failure
-- Non-Identical Bernoulli
-- Population Death Distribution
+# Overview
 
+The Central Limit Theorem (CLT) is a cornerstone of modern inferential
+statistics, asserting that the distribution of sample means approaches a
+normal distribution as the sample size increases, provided the
+underlying observations are independent and have a finite mean and
+variance. While textbooks frequently cite generic rules of thumb (such
+as $n \ge 30$), the actual trajectory and rate of convergence depend
+heavily on the geometric properties of the underlying population
+distribution, such as initial symmetry, tail thickness, and bounded
+support.
+
+------------------------------------------------------------------------
+
+# Methodologies
+
+This study evaluates the convergence behavior guaranteed by the Central
+Limit Theorem (CLT) across five continuous and discrete probability
+distributions: Standard Normal, Six-Sided Die (Discrete Uniform),
+Exponential ($\lambda = 1$), a Small Binomial ($m = 5, p = 0.1$), and
+the standard Cauchy distribution.
+
+To determine how and when each distribution transitions toward normality
+as sample size increases, we employ a three-tier methodological
+framework:
+
+1.  **Visual Fitting**: Evaluating empirical densities of standardized
+    sample means against theoretical Gaussian curves.
+2.  **Visual Trajectory and Quantile Diagnostics**: Monitoring the decay
+    of higher-order moment ratios (skewness and excess kurtosis) and
+    linearity on normal quantile-quantile (Q-Q) coordinates across
+    varying $n$.
+3.  **Statistical Moment & Error Evaluation**: Comparing empirical Monte
+    Carlo expectations and standard errors against theoretical
+    baselines, paired with formal goodness-of-fit testing.
+
+------------------------------------------------------------------------
+
+## Monte Carlo Simulation Framework
+
+For each parent distribution $X$, we draw independent and identically
+distributed (i.i.d.) observations across sample sizes:
+$$n \in \{1, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200\}$$
+
+At each sample size $n$, we generate $B = 10{,}000$ independent samples
+and calculate their respective sample means:
+$$\bar{X}_b = \frac{1}{n} \sum_{i=1}^n X_{b,i}, \quad b \in \{1, \dots, B\}$$
+
+The resulting empirical vector
+$\boldsymbol{\bar{X}} = (\bar{X}_1, \dots, \bar{X}_B)$ serves as the
+realization of the sampling distribution of the mean for each pair of
+distribution and $n$.
+
+------------------------------------------------------------------------
+
+## Visual Fitting (Empirical Densities vs. Gaussian Bell)
+
+To inspect convergence directly in probability space without distortion
+from scale shrinkage, sample means are standardized into empirical
+$Z$-scores:
+$$Z_b = \frac{\bar{X}_b - \widehat{\mu}_{\bar{X}}}{\widehat{\sigma}_{\bar{X}}}$$
+where $\widehat{\mu}_{\bar{X}}$ and $\widehat{\sigma}_{\bar{X}}$ are the
+empirical mean and standard deviation of $\boldsymbol{\bar{X}}$.
+
+- **Kernel Density Estimation (KDE)**: Continuous density curves are
+  estimated over $Z$ across selected benchmarks
+  ($n \in \{1, 5, 15, 50, 100\}$).
+- **Theoretical Benchmark**: A standard Gaussian probability density
+  function $\phi(z) = \frac{1}{\sqrt{2\pi}} e^{-z^2/2}$ is overlaid.
+- **Criterion for Normality**: As $n$ increases, empirical density
+  contours must collapse onto $\phi(z)$, smoothing out initial
+  discreteness (e.g., Die, Binomial) and eliminating structural
+  asymmetry (e.g., Exponential).
+
+------------------------------------------------------------------------
+
+## Visual Trajectory & Quantile Diagnostics
+
+Convergence is monitored through parametric curves tracking shape
+changes over $n$:
+
+### Skewness and Excess Kurtosis Trajectories
+
+For each set of $B$ sample means, sample central moments are defined as:
+$$m_k = \frac{1}{B} \sum_{b=1}^B (\bar{X}_b - \bar{\bar{X}})^k$$ From
+these, we measure: \* **Fisher-Pearson Skewness**:
+$$\gamma_1 = \frac{m_3}{m_2^{3/2}}$$ Evaluates asymmetry relative to the
+normal target of $0$. Under finite third moments, convergence satisfies
+$\gamma_1(\bar{X}) = O(1/\sqrt{n})$. \* **Excess Kurtosis**:
+$$\gamma_2 = \frac{m_4}{m_2^2} - 3$$ Evaluates tail weight relative to
+the normal target of $0$. Under finite fourth moments, convergence
+satisfies $\gamma_2(\bar{X}) = O(1/n)$.
+
+### Quantile-Quantile (Q-Q) Diagnostics
+
+To detect deviations in tail thickness and symmetry at every evaluated
+$n$, empirical quantiles of standardized sample means $Z_{(k)}$ are
+plotted against theoretical standard normal quantiles:
+$$q_k = \Phi^{-1}\left(\frac{k - 3/8}{B + 1/4}\right), \quad k = 1, \dots, B$$
+A distribution is deemed approximately normal when points align with the
+reference line $y = x$. S-shaped curves indicate heavy or light tails,
+while arched curves indicate persistent skewness.
+
+------------------------------------------------------------------------
+
+## Statistical Evaluation
+
+Visual assessments are complemented by numerical comparisons against
+theoretical population parameters.
+
+### Theoretical vs. Simulated Mean
+
+By the Weak Law of Large Numbers (WLLN), the expectation of the sample
+mean satisfies: $$\mathbb{E}[\bar{X}] = \mu$$ We assess bias by
+evaluating the deviation: $$\text{Bias}(\bar{X}) = \bar{\bar{X}} - \mu$$
+For well-behaved distributions with finite expectation,
+$|\text{Bias}(\bar{X})| \to 0$ as $B \to \infty$.
+
+### Simulated Standard Error vs. Theoretical Standard Error
+
+According to classical sampling theory, the standard deviation of the
+sample mean depends strictly on the population standard deviation
+$\sigma$ and sample size $n$\[cite: 2\]:
+$$\text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}} \tag{1}$$\[cite: 2\] We
+compute the empirical standard error across the $B$ simulations:
+$$s_{\bar{X}} = \sqrt{\frac{1}{B-1} \sum_{b=1}^B (\bar{X}_b - \bar{\bar{X}})^2}$$
+and evaluate the standard error ratio:
+$$\text{Ratio} = \frac{s_{\bar{X}}}{\sigma / \sqrt{n}}$$ A ratio
+approximating $1.000$ confirms that sampling variance contracts at the
+rate expected under the CLT.
+
+### Goodness-of-Fit Testing
+
+To provide statistical evidence for or against normality, a random
+subsample ($N_{\text{sub}} = 5{,}000$) of the simulated means is tested
+using the **Shapiro-Wilk test**:
+$$W = \frac{\left(\sum_{i=1}^{N_{\text{sub}}} a_i x_{(i)}\right)^2}{\sum_{i=1}^{N_{\text{sub}}} (x_i - \bar{x})^2}$$
+Values of $W$ approaching $1.000$ paired with failure to reject the null
+hypothesis ($p \ge 0.05$) indicate that the empirical sample means are
+consistent with a normal distribution.
+
+------------------------------------------------------------------------
+
+# Results
+
+The results of experimentation and analysis can be found under the analysis folder. 
+There you will find quarto documents or html pages that show an analysis for each distribution tested as well as 
+a full analysis document.
