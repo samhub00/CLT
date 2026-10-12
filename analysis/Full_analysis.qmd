@@ -1,0 +1,104 @@
+---
+title: "Central Limit Theorem Simulation Project Overview"
+author: "Sam Hubler"
+date: today
+format:
+  html:
+    toc: true
+    theme: cosmo
+---
+
+## Project Overview
+
+This project investigates the Central Limit Theorem (CLT) using Monte Carlo simulations ($B = 10{,}000$) to evaluate how rapidly sampling distributions of the sample mean converge to normality across five distinct distributions.
+
+- **Standard Normal:** Functions as the baseline reference. Because the underlying population is already normal, the sampling distribution satisfies the CLT immediately at $n = 1$, exhibiting zero skewness and zero excess kurtosis across all sample sizes.
+- **Cauchy:** Functions as the non-conforming counterexample. Due to its heavy tails, neither the theoretical mean nor the theoretical variance is defined. Sample means do not converge to a normal distribution regardless of how large $n$ becomes.
+- **Six-Sided Die (Discrete Uniform):** A discrete, bounded, symmetric distribution. Its inherent symmetry enables rapid convergence toward normality; discrete stair-steps smooth out, closely approximating a normal curve by $n = 30$.
+- **Exponential (**$\lambda = 1$): A continuous, strongly right-skewed distribution. Additional sample size is required to pull the long right tail inward and approximate normality.
+- **Binomial (**$n_{\text{size}} = 5, p = 0.10$): A discrete, right-skewed distribution. The low success probability introduces pronounced asymmetry at smaller $n$, requiring larger sample sizes to overcome discreteness and skewness.
+
+------------------------------------------------------------------------
+
+## Sample Size Decisions
+
+```{r}
+#| label: tbl-sample-size-decisions
+#| echo: false
+
+sample_decisions <- data.frame(
+  Distribution = c(
+    "Standard Normal",
+    "Cauchy",
+    "Six-Sided Die",
+    "Exponential",
+    "Binomial"
+  ),
+  `Evaluated n Range` = c(
+    "1 to 200 (13 values)"
+  ),
+  `Plotted Subset (Visual Evidence)` = c(
+    "1, 10, 30, 100",
+    "1, 10, 30, 100",
+    "1, 5, 10, 15",
+    "1, 20, 30, 35",
+    "1, 10, 20, 25"
+  ),
+  `Convergence Threshold` = c(
+    "n = 1 (Immediate)",
+    "Does not converge",
+    "n ≈ 10",
+    "n ≈ 30",
+    "n ≈ 25"
+  ),
+  check.names = FALSE
+)
+
+knitr::kable(
+  sample_decisions,
+  caption = "Summary of Sample Size Decisions and Convergence Benchmarks"
+)
+```
+
+------------------------------------------------------------------------
+
+## Summary of Convergence & Normality Judgments
+
+| Population | Smallest $n$ Judged Normal | Skewness at Chosen $n$ | Excess Kurtosis at Chosen $n$ | Key Observation |
+|:--------------|:--------------|:--------------|:--------------|:--------------|
+| **Standard Normal** | $n = 1$ | $\approx -0.006$ | $\approx -0.03$ | Population is already Gaussian; satisfies CLT at $n = 1$. |
+| **Discrete Uniform (Die)** | $n = 10$ | $\approx -0.002$ | $\approx -0.2$ | Population is symmetric; convergence is rapid once discreteness smooths out. |
+| **Exponential (**$\lambda = 1$) | $n = 30$ | $\approx 0.39$ | $\approx 0.23$ | Strong initial right-skewness requires $n \ge 30$ to pull in the long tail. |
+| **Binomial (**$n=5, p=0.10$) | $n = 25$ | $\approx 0.2$ | $\approx 0.08$ | Discreteness combined with low probability of success slows convergence. |
+| **Cauchy** | Never ($N/A$) | Undefined | Undefined | Violates CLT assumptions due to undefined mean and infinite variance (high amount of outliers). |
+
+------------------------------------------------------------------------
+
+## Overarching Research Questions
+
+### 1. How does the shape (symmetry, tails, discreteness) of the population distribution impact the rate of convergence?
+
+- **Symmetry vs. Skewness:** Symmetric distributions converge significantly faster. For the Six-Sided Die, because skewness is already zero, the sample mean only needs enough observations to eliminate excess kurtosis and fill in discrete steps. In contrast, skewed distributions like the Exponential and Binomial require substantially larger sample sizes for sample averages to pull extreme tail values toward the center.
+- **Discreteness:** Discrete outcomes create multi-modal, stair-stepped empirical distributions at small $n$. Normality requires $n$ to be large enough that the lattice structure blends into a continuous density curve. This stair step nature caused the p values to not get high enough in some instances to traditionally reject the null hypothesis.
+- **Tail Weight:** Heavier tails dramatically prevent convergence. The Cauchy distribution represents the extreme boundary where tails are so heavy that sample means do not stabilize at all. The extreme amount of outliers causes the skewness and kurtosis to jump around randomly with the simulation.
+
+### 2. Is the classic textbook rule of thumb ($n \ge 30$) universally reliable?
+
+- The guideline $n \ge 30$ is reasonably conservative and reliable for light-tailed, continuous, or moderately skewed distributions (such as Exponential or uniform distributions).
+- However, it fails in two scenarios:
+  1.  **Severely skewed or sparse discrete data:** For binomial models with low base rates ($p = 0.10$), the sample distribution may still retain noticeable tail skewness and fail sensitive goodness-of-fit tests at $n = 30$ making it a low threshold for confidence.
+  2.  **Heavy-tailed distributions:** For distributions lacking finite second moments (like Cauchy), no finite sample size $n$ satisfies the CLT.
+- The textbook rule of thumb is a good starting point and belongs in a textbook as the basic answer, with more understanding of the populations we are investigating we can take off some of the guardrails the $n \ge 30$ sample size provides. In the same way it is important to understand that some distributions such as the Cauchy do not follow the rules for this theorem.
+
+### 3. Under what mathematical conditions does the Central Limit Theorem break down entirely?
+
+- The Central Limit Theorem breaks when the theoretical standard error and sample mean cannot be calculated. Using the bias and ratio were very helpful in proving the theorem. The distributions must be able to converge for this to happen.
+
+<!-- -->
+
+- The Cauchy distribution violates both conditions. Its tails decay at rate $O(x^{-2})$, causing the integral for the expected value to diverge. Because $\sigma^2$ is infinite, sample averaging does not reduce variability; the average of $n$ standard Cauchy variables is itself identically distributed as a standard Cauchy variable.
+
+### 4. How closely does the simulated standard error conform to theoretical standard error $\text{SE}(\bar{X}) = \sigma / \sqrt{n}$?
+
+- For distributions with finite variance (Normal, Uniform, Exponential, Binomial), the ratio $\text{sim\_se} / \text{theo\_se}$ remains near $1.00$ across all tested sample sizes (besides n \< 5).
+- This confirms that Monte Carlo simulations accurately capture the standard rate of variance reduction ($1 / \sqrt{n}$) when the necessary moment conditions are satisfied.

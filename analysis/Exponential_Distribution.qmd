@@ -1,0 +1,268 @@
+---
+title: "Central Limit Theorem Analysis: Exponential Distribution"
+author: "Sam Hubler"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+# --- CONFIGURATION ---
+# Set the name of the target distribution matching your simulation[cite: 4]
+TARGET_DIST <- "exponential" 
+
+# Adjust output directory path to match where your files were written[cite: 4]
+data_dir <- "~/SJSU26F/MATH167R/CLT/data/exponential"
+
+# Load saved simulation dataset and add necessary columns for tables[cite: 4]
+summary_table <- read.csv(file.path(data_dir, "exp_metrics.csv")) %>%
+  mutate(
+    mean_bias = sim_mean - theo_mean,
+    se_ratio = sim_se / theo_se
+  )
+```
+
+## 1. Original Population Distribution
+
+<!-- Question 1: What does the original population distribution look like? -->
+
+- **Name / Class:** Exponential
+- **Type:** Continuous, heavily right-skewed
+- **Description:**
+  <!-- Describe features: continuity, boundedness, symmetry/skewness, support, unimodal vs multimodal, etc. -->
+  The exponential distribution is a distribution representing the
+  occurrence of an event that will. happen on average once per unit of
+  time. These events happen continuously and independently. An example
+  used in class would be how late a professor is to class.
+
+```{r}
+#| label: fig-population-shape
+#| fig-cap: "Theoretical / baseline shape of the population distribution (n = 1)."
+
+ggplot() +
+  xlim(0, 5) +
+  stat_function(fun = dexp, args = list(rate=1), color = "#009E73", linewidth = 1) +
+  labs(
+    title = paste("Population Density:", TARGET_DIST),
+    x = "x",
+    y = "Density"
+  ) +
+  theme_bw()
+```
+
+------------------------------------------------------------------------
+
+## 2. Theoretical Mean and Standard Deviation
+
+- **Theoretical Mean (**$\mu$): 1\[cite: 4\]
+- **Theoretical Standard Deviation (**$\sigma$): 1\[cite: 4\]
+
+For an Exponential distribution $X \sim \text{Exp}(\lambda)$ with rate
+parameter $\lambda = 1$, the PDF is:
+
+$$f(x) = \lambda e^{-\lambda x}$$
+
+The theoretical mean is calculated as:
+
+$$\mu = \text{E}[X] = \frac{1}{\lambda} = 1$$
+
+The theoretical standard deviation is derived from the variance:
+
+$$\sigma = \sqrt{\text{Var}(X)} = \sqrt{\frac{1}{\lambda^2}} = 1$$
+
+------------------------------------------------------------------------
+
+## 3. Rate of Convergence to Normality
+
+<!-- Question 3: How quickly does the sampling distribution become approximately normal? --> 
+
+- **Observations across sample sizes (**$n$):
+  <!-- At what sample size n does skewness drop close to 0? Kurtosis near 0? --> Starting with a very high initial kurtosis score, it quickly approaches zero. Skewness also starts at a higher level and starts to converge rapidly. As this is a known distribution this is expected. 
+
+```{r}
+#| label: fig-shape-statistics
+#| fig-cap: "Convergence of Skewness and Excess Kurtosis toward zero as sample size increases."
+
+summary_table %>%
+  pivot_longer(cols = c(skewness, excess_kurtosis), names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = n, y = value, color = metric)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("skewness" = "#009E73", "excess_kurtosis" = "orange")) +
+  labs(
+    title = paste("Shape Statistics vs. n for", TARGET_DIST),
+    x = "Sample Size (n)",
+    y = "Metric Value",
+    color = "Metric"
+  ) +
+  theme_bw()
+```
+
+
+------------------------------------------------------------------------
+
+## 4. Simulated Mean vs. Theoretical Mean
+
+<!-- Question 4: How does the simulated mean compare with the theoretical mean? --> The simulated mean and theoretical mean show us if our Monte Carlo simulation model is behaving as expected.
+
+```{r}
+#| label: tbl-mean-comparison
+#| tbl-cap: "Comparison of simulated sample means vs. theoretical mean."
+
+summary_table %>%
+  select(n, theo_mean, sim_mean, mean_bias) %>%
+  kable(col.names = c("n", "Theoretical Mean (μ)", "Simulated Mean (X̄)", "Mean Bias (X̄ - μ)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the empirical mean stay close to the theoretical mean across all n? Is there any noticeable bias? --> The bias is very close to zero through the increases in sample size whihc says that the model is predicting correctly and there is not a large amount of bias in the simulation.
+
+------------------------------------------------------------------------
+
+## 5. Simulated Standard Error vs. Theoretical Standard Error
+
+<!-- Question 5: How does the simulated standard error compare with SE(X̄) = σ / √n? -->
+
+$$\text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}}$$
+
+```{r}
+#| label: tbl-se-comparison
+#| tbl-cap: "Comparison of simulated standard errors with theoretical SE = σ / √n."
+
+summary_table %>%
+  select(n, theo_se, sim_se, se_ratio) %>%
+  kable(col.names = c("n", "Theoretical SE", "Simulated SE", "SE Ratio (Sim / Theo)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the ratio sim_se / theo_se remain close to 1.0? Does the empirical spread decay at rate 1 / √n? --> The simulated standard error and theoretical standard error ratio is close to 1 though the increases in sample size which shows that the simulation is an ideal benchmark with low variability. 
+  
+------------------------------------------------------------------------
+
+## 6. Evidence for Normality
+
+<!-- Question 6: What evidence supports your conclusion that the distribution is—or is not—approximately normal? -->
+
+### Graphical Evidence (Density & Q-Q Plots)
+
+```{r}
+#| label: fig-normal-dist-qq
+#| fig-cap: "Standardized empirical density and Normal Q-Q plots across selected sample sizes $n$ ($B = 10{,}000$)."
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: "center"
+#| warning: false
+#| message: false
+
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+set.seed(8676)
+
+B <- 10000L
+selected_n <- c(1, 20, 30, 35)
+
+density_qq_list <- list()
+
+for (n_val in selected_n) {
+  observations <- rexp(B * n_val, rate = 1)
+  sample_matrix <- matrix(observations, nrow = B, ncol = n_val)
+  means <- rowMeans(sample_matrix)
+  
+  sim_mean <- mean(means)
+  sim_se <- sd(means)
+  
+  z_means <- if (is.finite(sim_se) && sim_se > 0) (means - sim_mean) / sim_se else rep(NA_real_, B)
+  density_qq_list[[length(density_qq_list) + 1]] <- data.frame(
+    n_label = paste0("n = ", n_val),
+    n_num = n_val,
+    z = z_means
+  )
+}
+
+plot_data <- bind_rows(density_qq_list) %>% filter(is.finite(z))
+plot_data$n_label <- factor(plot_data$n_label, levels = paste0("n = ", selected_n))
+
+tight_theme <- theme_bw(base_size = 11) +
+  theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 10, face = "bold"),
+    plot.margin = margin(t = 4, r = 6, b = 4, l = 6)
+  )
+
+p_dens_tight <- ggplot(plot_data, aes(x = z)) +
+  geom_density(fill = "#009E73", alpha = 0.35, color = "#009E73", linewidth = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), linetype = "dashed", color = "black") +
+  facet_wrap(~ n_label, nrow = 2, scales = "free_y") +
+  labs(title = "Empirical Density vs N(0,1)", x = "Standardized Mean (Z)", y = "Density") +
+  tight_theme
+
+p_qq_tight <- ggplot(plot_data, aes(sample = z)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray30") +
+  stat_qq(color = "#009E73", alpha = 0.15, size = 0.8) +
+  facet_wrap(~ n_label, nrow = 2) +
+  labs(title = "Normal Q-Q Plots", x = "Theoretical Quantiles", y = "Sample Quantiles") +
+  tight_theme
+
+p_dens_tight | p_qq_tight
+```
+
+- **Density Overlays:**
+  <!-- Mention the alignment with the standard N(0, 1) curve. --> The density overlay charts show that due to the extreme right skewness of the exponential distribution, the sample mean distributions have a hard time shaking off the skewness that is left over. I think that by n = 30, the skewness settles down to an acceptable level. There is still some skewness but visually the n = 30 graph falls into the standard distribution well. 
+- **Q-Q Plot Quantile Alignment:**
+  <!-- Inspect the linearity in your Q-Q plots. --> The Q-Q plots approach linearity rather slowly. Interestingly the Q-Q plot for n = 35 appears less linear than 30 which is probably due to the randomness in the Monte Carlo simulation instead of something within the distribution. The linearity feels comfortable at the n = 30 mark although there is not much difference from n = 25. 
+
+### Statistical Evidence (Shapiro-Wilk Test & Moment Ratios)
+
+```{r}
+#| label: tbl-normality-metrics
+#| tbl-cap: "Normality assessment metrics: Skewness, Kurtosis, and Shapiro-Wilk test."
+
+summary_table %>%
+  select(n, skewness, excess_kurtosis, shapiro_W, shapiro_p) %>%
+  kable(col.names = c("n", "Skewness", "Excess Kurtosis", "Shapiro-Wilk W", "p-value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Conclusion on Normality:**
+  <!-- Summarize when the distribution meets practical and formal normality thresholds. --> According to the statistical tests, skewness and kurtosis do not approach 0 for some time, and at n = 30, are relatively high compared to other distributions. That being said, the W score for this distribution approaches 1 rather quickly meaning that it fits the normal distribution relatively well from n = 5 and beyond. 
+
+------------------------------------------------------------------------
+
+## 7. Limitations and Surprises
+
+<!-- Question 7: What limitations or surprises did you observe? -->
+
+- **Key Observations / Surprises:**
+  <!-- e.g., persistent tail skewness, boundary effects, Shapiro-Wilk p-value sensitivity to large sample sizes, etc. --> There was a persistent skewness to the graph and I noticed across simulations there was not a very smooth graph peak until large sample sizes. 
+- **Simulation Limitations:**
+  <!-- e.g., finite Monte Carlo reps B = 10,000, fixed selection of n_values, truncation of sub-sample size for normality testing. --> I noticed the Monte Carlo simulation results affected the graph quite a bit resulting in high levels of visual variance between small sample size changes such as n = 30 and n = 31.
+
+------------------------------------------------------------------------
+
+## 8. Final Verdict
+
+#### Central Limit Theorem Confirmed at *n = 30*
+
+<!-- Final thoughts on convergence --> I felt like the graphs tell the story here, the Shapiro Wilk W value approaches 1 fairly quickly and the main reasons for waiting until n = 30 were mostly due to the excess skewness that hung on throughout the graphs.

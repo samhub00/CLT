@@ -1,0 +1,302 @@
+---
+title: "Central Limit Theorem Analysis: Cauchy Distribution"
+author: "Sam Hubler"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+# --- CONFIGURATION ---
+# Set the name of the target distribution matching your simulation[cite: 2]
+TARGET_DIST <- "cauchy" 
+
+# Adjust output directory path to match where your files were written[cite: 2]
+data_dir <- "~/SJSU26F/MATH167R/CLT/data/cauchy"
+
+# Load saved simulation dataset and add necessary columns for tables[cite: 2]
+summary_table <- read.csv(file.path(data_dir, "cauchy_metrics.csv")) %>%
+  mutate(
+    mean_bias = sim_mean - theo_mean,
+    se_ratio = sim_se / theo_se
+  )
+```
+
+## 1. Original Population Distribution
+
+<!-- Question 1: What does the original population distribution look like? -->
+
+- **Name / Class:** `r TARGET_DIST`
+- **Type:** Continuous, symmetric, extremely heavy-tailed\[cite: 2\]
+- **Description:**
+  <!-- Describe features: continuity, boundedness, symmetry/skewness, support, unimodal vs multimodal, etc. -->
+  The Cauchy distribution is a continuous, symmetrical distribution with
+  very heavy tails. This distribution is helpful in physics and
+  financial returns where outliers are more present than standard
+  distributions.
+
+```{r}
+#| label: fig-population-shape
+#| fig-cap: "Theoretical / baseline shape of the population distribution (n = 1)."
+
+ggplot() +
+  xlim(-10, 10) +
+  stat_function(fun = dcauchy, args = list(location=0, scale=1), color = "#E69F00", linewidth = 1) +
+  labs(
+    title = paste("Population Density:", TARGET_DIST),
+    x = "x",
+    y = "Density"
+  ) +
+  theme_bw()
+```
+
+------------------------------------------------------------------------
+
+## 2. Theoretical Mean and Standard Deviation
+
+- **Theoretical Mean (**$\mu$): Undefined (NA)\[cite: 2\]
+- **Theoretical Standard Deviation (**$\sigma$): Undefined (NA)\[cite:
+  2\]
+
+For a standard Cauchy distribution, the PDF is:
+
+$$f(x) = \frac{1}{\pi(1 + x^2)}$$
+
+The theoretical mean is undefined because the integral does not
+absolutely converge:
+
+$$\int_{-\infty}^{\infty} x \frac{1}{\pi(1 + x^2)} \, dx \to \text{Undefined}$$
+
+Since the mean is undefined, the variance and theoretical standard
+deviation are also undefined, representing an infinitely heavy tail.
+
+------------------------------------------------------------------------
+
+## 3. Rate of Convergence to Normality
+
+<!-- Question 3: How quickly does the sampling distribution become approximately normal? -->
+
+- **Observations across sample sizes (**$n$):
+  <!-- At what sample size n does skewness drop close to 0? Kurtosis near 0? -->
+  This distribution is symmetrical which means while simulation can add
+  some fluctuation, it will have a low amount of skewness. The excess
+  kurtosis levels are extremely high
+
+```{r}
+#| label: fig-shape-statistics
+#| fig-cap: "Convergence of Skewness and Excess Kurtosis toward zero as sample size increases."
+
+summary_table %>%
+  pivot_longer(cols = c(skewness, excess_kurtosis), names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = n, y = value, color = metric)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("skewness" = "#E69F00", "excess_kurtosis" = "#E69F00")) +
+  labs(
+    title = paste("Shape Statistics vs. n for", TARGET_DIST),
+    x = "Sample Size (n)",
+    y = "Metric Value",
+    color = "Metric"
+  ) +
+  theme_bw()
+```
+
+::: callout-note
+### Important to note
+
+<!-- Add note about specific behavior for this distribution here -->As
+the sample mean size increases, excess kurtosis grows!
+:::
+
+------------------------------------------------------------------------
+
+## 4. Simulated Mean vs. Theoretical Mean
+
+<!-- Question 4: How does the simulated mean compare with the theoretical mean? -->
+
+```{r}
+#| label: tbl-mean-comparison
+#| tbl-cap: "Comparison of simulated sample means vs. theoretical mean."
+
+summary_table %>%
+  select(n, theo_mean, sim_mean, mean_bias) %>%
+  kable(col.names = c("n", "Theoretical Mean (μ)", "Simulated Mean (X̄)", "Mean Bias (X̄ - μ)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the empirical mean stay close to the theoretical mean across all n? Is there any noticeable bias? -->
+  We cannot calculate this because the theoretical mean does not exist.
+
+------------------------------------------------------------------------
+
+## 5. Simulated Standard Error vs. Theoretical Standard Error
+
+<!-- Question 5: How does the simulated standard error compare with SE(X̄) = σ / √n? -->
+
+$$\text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}}$$
+
+```{r}
+#| label: tbl-se-comparison
+#| tbl-cap: "Comparison of simulated standard errors with theoretical SE = σ / √n."
+
+summary_table %>%
+  select(n, theo_se, sim_se, se_ratio) %>%
+  kable(col.names = c("n", "Theoretical SE", "Simulated SE", "SE Ratio (Sim / Theo)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the ratio sim_se / theo_se remain close to 1.0? Does the empirical spread decay at rate 1 / √n? -->
+  We cannot calculate this because the theoretical standard error does
+  not exist.
+
+------------------------------------------------------------------------
+
+## 6. Evidence for Normality
+
+<!-- Question 6: What evidence supports your conclusion that the distribution is—or is not—approximately normal? -->
+
+### Graphical Evidence (Density & Q-Q Plots)
+
+```{r}
+#| label: fig-normal-dist-qq
+#| fig-cap: "Standardized empirical density and Normal Q-Q plots across selected sample sizes $n$ ($B = 10{,}000$)."
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: "center"
+#| warning: false
+#| message: false
+
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+set.seed(8676)
+
+B <- 10000L
+selected_n <- c(1, 10, 30, 100)
+
+density_qq_list <- list()
+
+for (n_val in selected_n) {
+  observations <- rcauchy(B * n_val, location = 0, scale = 1)
+  sample_matrix <- matrix(observations, nrow = B, ncol = n_val)
+  means <- rowMeans(sample_matrix)
+  
+  sim_mean <- mean(means)
+  sim_se <- sd(means)
+  
+  z_means <- if (is.finite(sim_se) && sim_se > 0) (means - sim_mean) / sim_se else rep(NA_real_, B)
+  density_qq_list[[length(density_qq_list) + 1]] <- data.frame(
+    n_label = paste0("n = ", n_val),
+    n_num = n_val,
+    z = z_means
+  )
+}
+
+plot_data <- bind_rows(density_qq_list) %>% filter(is.finite(z))
+plot_data$n_label <- factor(plot_data$n_label, levels = paste0("n = ", selected_n))
+
+tight_theme <- theme_bw(base_size = 11) +
+  theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 10, face = "bold"),
+    plot.margin = margin(t = 4, r = 6, b = 4, l = 6)
+  )
+
+p_dens_tight <- ggplot(plot_data, aes(x = z)) +
+  geom_density(fill = "#E69F00", alpha = 0.35, color = "#E69F00", linewidth = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), linetype = "dashed", color = "black") +
+  facet_wrap(~ n_label, nrow = 2, scales = "free_y") +
+  labs(title = "Empirical Density vs N(0,1)", x = "Standardized Mean (Z)", y = "Density") +
+  tight_theme
+
+p_qq_tight <- ggplot(plot_data, aes(sample = z)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray30") +
+  stat_qq(color = "#E69F00", alpha = 0.15, size = 0.8) +
+  facet_wrap(~ n_label, nrow = 2) +
+  labs(title = "Normal Q-Q Plots", x = "Theoretical Quantiles", y = "Sample Quantiles") +
+  tight_theme
+
+p_dens_tight | p_qq_tight
+```
+
+- **Density Overlays:**
+  <!-- Mention the alignment with the standard N(0, 1) curve. -->The
+  density overlay is no where near the standard normal distribution.
+- **Q-Q Plot Quantile Alignment:**
+  <!-- Inspect the linearity in your Q-Q plots. -->The Q-Q plot while
+  linear does not align with standard normal Q-Q plot values.
+
+### Statistical Evidence (Shapiro-Wilk Test & Moment Ratios)
+
+```{r}
+#| label: tbl-normality-metrics
+#| tbl-cap: "Normality assessment metrics: Skewness, Kurtosis, and Shapiro-Wilk test."
+
+summary_table %>%
+  select(n, skewness, excess_kurtosis, shapiro_W, shapiro_p) %>%
+  kable(col.names = c("n", "Skewness", "Excess Kurtosis", "Shapiro-Wilk W", "p-value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Conclusion on Normality:**
+  <!-- Summarize when the distribution meets practical and formal normality thresholds. -->
+  The skewness values and excess kurtosis are extremely variable due to
+  the outlier producing nature of this distribution. The Shapiro-Wilk W
+  value never even comes close to 1.0.
+
+------------------------------------------------------------------------
+
+## 7. Limitations and Surprises
+
+<!-- Question 7: What limitations or surprises did you observe? -->
+
+- **Key Observations / Surprises:**
+  <!-- e.g., persistent tail skewness, boundary effects, Shapiro-Wilk p-value sensitivity to large sample sizes, etc. -->There
+  is no skewness but the heavy tailed nature of the Cauchy distribution
+  makes it impossible to converge. Even though it is a common
+  distribution it does not appear to follow the typical rules of other
+  distributions. I am surprised that it never converges, and actually
+  the excess kurtosis grows rapidly as sample sizes get larger. It
+  clearly does not adhere to the Central Limit Theorem.
+- **Simulation Limitations:**
+  <!-- e.g., finite Monte Carlo reps B = 10,000, fixed selection of n_values, truncation of sub-sample size for normality testing. -->Monte
+  Carlo simulation has a large effect on this distribution as seen in
+  the skewness which does not converge. It appears that the skewness
+  converges at first glance but the values are so high that it does not.
+  Other distributions converge to zero meaning there is extremely small
+  chance that some extremely high outlier occur but that is not the case
+  with the Cauchy.
+
+------------------------------------------------------------------------
+
+## 8. Final Verdict
+
+#### Central Limit Theorem *Does Not Apply*
+
+<!-- Final thoughts on convergence -->The Central Limit Theorem does not
+apply to this distribution. There were some warning signs based on the
+inability to calculate theoretical standard error and mean. In practice
+the possibility of outliers presents itself very strongly and makes
+convergence impossible. There is no smoothing that occurs because the
+heavy tails will always win and skew the model.

@@ -1,0 +1,307 @@
+---
+title: "Central Limit Theorem Analysis: Standard Normal Distribution"
+author: "Sam Hubler"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+# --- CONFIGURATION ---
+# Set the name of the target distribution matching your simulation:
+# Options: "standard_normal", "six_sided_die", "exponential", "binomial", "cauchy"
+TARGET_DIST <- "standard_normal" 
+
+# Adjust output directory path to match where your files were written
+data_dir <- "~/SJSU26F/MATH167R/CLT/data/standard_normal"
+data_dir
+# Load saved simulation datasets
+shape_data <- read.csv(file.path(data_dir, "shape_statistics.csv"))
+
+summary_table <- read.csv(file.path(data_dir, "clt_convergence_metrics_table.csv")) 
+
+```
+
+## 1. Original Population Distribution
+
+<!-- Question 1: What does the original population distribution look like? -->
+
+- **Name / Class:** `r TARGET_DIST`
+- **Type:** `r summary_table$pop_shape[1]`
+- **Description:** The standard normal distribution is a special and
+  simplified type of normal distribution where the mean is 0 and the
+  standard deviation is 1. This distribution adheres to the empirical
+  rule which states that \~68% of data falls within one standard
+  deviation of the mean, \~95% of data falls within two standard
+  deviations of the mean and \~99.7% of data falls within three standard
+  deviations of the mean. It is also the pillar of the central limit
+  theorem and the distribution which we are trying to show other sample
+  distributions become as the n of samples gets larger.
+  <!-- Describe features: continuity, boundedness, symmetry/skewness, support, unimodal vs multimodal, etc. -->
+
+```{r}
+#| label: fig-population-shape
+#| fig-cap: "Theoretical / baseline shape of the population distribution (n = 1)."
+
+# Example population plot (n = 1)
+# You can customize this plot based on your chosen distribution
+ggplot() +
+  xlim(-4, 4) +
+  stat_function(fun = dnorm, args = list(mean=0, sd=1), color = "#009E73", linewidth = 1) +
+  labs(
+    title = paste("Population Density:", TARGET_DIST),
+    x = "x",
+    y = "Density"
+  ) +
+  theme_bw()
+```
+
+------------------------------------------------------------------------
+
+## 2. Theoretical Mean and Standard Deviation
+
+- **Theoretical Mean (**$\mu$): `r summary_table$theo_mean[1]`
+- **Theoretical Standard Deviation (**$\sigma$): 1
+
+For a Standard Normal distribution $X \sim \mathcal{N}(0, 1)$, the PDF
+is:
+
+$$f(x) = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}$$
+
+The theoretical mean is calculated as:
+
+$$\mu = \text{E}[X] = \int_{-\infty}^{\infty} x \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}} \, dx = \frac{1}{\sqrt{2\pi}} \left[ -e^{-\frac{x^2}{2}} \right]_{-\infty}^{\infty} = 0$$
+
+The theoretical standard deviation is:
+
+$$\sigma = \sqrt{\text{Var}(X)} = \sqrt{\text{E}[X^2] - (\text{E}[X])^2} = \sqrt{1 - 0^2} = 1$$
+
+------------------------------------------------------------------------
+
+## 3. Rate of Convergence to Normality
+
+<!-- Question 3: How quickly does the sampling distribution become approximately normal? -->
+
+- **Observations across sample sizes (**$n$): In the graph the red line
+  represents kurtosis while the blue line represents skewness. Kurtosis
+  is a statistic used to calculate the height of a distribution, where 0
+  is standard, and skewness is used to calculate the left or right bias
+  that a distribution may have. As we can see here below, both kurtosis
+  and skewness are very close to zero throughout the entire set of
+  sample sizes.
+  <!-- At what sample size n does skewness drop close to 0? Kurtosis near 0? -->
+
+```{r}
+#| label: fig-shape-statistics
+#| fig-cap: "Convergence of Skewness and Excess Kurtosis toward zero as sample size increases."
+
+shape_data %>%
+  pivot_longer(cols = c(skewness, excess_kurtosis), names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = n, y = value, color = metric)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  labs(
+    title = paste("Shape Statistics vs. n for", TARGET_DIST),
+    x = "Sample Size (n)",
+    y = "Metric Value",
+    color = "Metric"
+  ) +
+  theme_bw()
+```
+
+::: callout-note
+### Important to note
+
+While the kurtosis and skewness plots show a lot of variation, the range
+is quite small!
+:::
+
+------------------------------------------------------------------------
+
+## 4. Simulated Mean vs. Theoretical Mean
+
+The simulated mean and theoretical mean show us if our Monte Carlo
+simulation model is behaving as expected.
+<!-- Question 4: How does the simulated mean compare with the theoretical mean? -->
+
+```{r}
+#| label: tbl-mean-comparison
+#| tbl-cap: "Comparison of simulated sample means vs. theoretical mean."
+
+summary_table %>%
+  select(n, theo_mean, sim_mean, mean_bias) %>%
+  kable(col.names = c("n", "Theoretical Mean (μ)", "Simulated Mean (X̄)", "Mean Bias (X̄ - μ)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the empirical mean stay close to the theoretical mean across all n? Is there any noticeable bias? -->
+  With a general bias of 0 we can say that our model is indeed
+  predicting correctly, there is not a large amount of bias in this
+  simulation.
+
+------------------------------------------------------------------------
+
+## 5. Simulated Standard Error vs. Theoretical Standard Error
+
+<!-- Question 5: How does the simulated standard error compare with SE(X̄) = σ / √n? -->
+
+$$\text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}}$$
+
+```{r}
+#| label: tbl-se-comparison
+#| tbl-cap: "Comparison of simulated standard errors with theoretical SE = σ / √n."
+
+summary_table %>%
+  select(n, theo_se, sim_se, se_ratio) %>%
+  kable(col.names = c("n", "Theoretical SE", "Simulated SE", "SE Ratio (Sim / Theo)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:** With a SE Ratio hovering around 1.0, the empirical
+  variability of the simulation matches the theoretical variability.
+  This means that the simulation is an ideal benchmark and that we can
+  draw conclusions from it.
+  <!-- Does the ratio sim_se / theo_se remain close to 1.0? Does the empirical spread decay at rate 1 / √n? -->
+
+------------------------------------------------------------------------
+
+## 6. Evidence for Normality
+
+<!-- Question 6: What evidence supports your conclusion that the distribution is—or is not—approximately normal? -->
+
+### Graphical Evidence (Density & Q-Q Plots)
+
+```{r}
+#| label: fig-normal-dist-qq
+#| fig-cap: "Standardized empirical density and Normal Q-Q plots across selected sample sizes $n$ ($B = 10{,}000$)."
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: "center"
+#| warning: false
+#| message: false
+
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+set.seed(8676)
+
+B <- 10000L
+# Selected subset of sample sizes to keep layout clean and tight
+selected_n <- c(1, 10, 30, 100)
+
+density_qq_list <- list()
+
+for (n_val in selected_n) {
+  observations <- rnorm(B * n_val, mean = 0, sd = 1)
+  sample_matrix <- matrix(observations, nrow = B, ncol = n_val)
+  means <- rowMeans(sample_matrix)
+  
+  sim_mean <- mean(means)
+  sim_se <- sd(means)
+  
+  z_means <- (means - sim_mean) / sim_se
+  density_qq_list[[length(density_qq_list) + 1]] <- data.frame(
+    n_label = paste0("n = ", n_val),
+    n_num = n_val,
+    z = z_means
+  )
+}
+
+plot_data <- bind_rows(density_qq_list)
+plot_data$n_label <- factor(plot_data$n_label, levels = paste0("n = ", selected_n))
+
+# Minimal shared styling for compact plots
+tight_theme <- theme_bw(base_size = 11) +
+  theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 10, face = "bold"),
+    plot.margin = margin(t = 4, r = 6, b = 4, l = 6)
+  )
+
+# 1. Density Facets
+p_dens_tight <- ggplot(plot_data, aes(x = z)) +
+  geom_density(fill = "#0072B2", alpha = 0.35, color = "#0072B2", linewidth = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), linetype = "dashed", color = "black") +
+  facet_wrap(~ n_label, nrow = 2, scales = "free_y") +
+  labs(title = "Empirical Density vs N(0,1)", x = "Standardized Mean (Z)", y = "Density") +
+  tight_theme
+
+# 2. Q-Q Facets
+p_qq_tight <- ggplot(plot_data, aes(sample = z)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray30") +
+  stat_qq(color = "#0072B2", alpha = 0.15, size = 0.8) +
+  facet_wrap(~ n_label, nrow = 2) +
+  labs(title = "Normal Q-Q Plots", x = "Theoretical Quantiles", y = "Sample Quantiles") +
+  tight_theme
+
+# Combine side-by-side with tight layout
+p_dens_tight | p_qq_tight
+```
+
+- **Density Overlays:** As seen in the density charts, there is no noticeable change not explained by randomness as the sample size grows.
+  <!-- Mention the alignment with the standard N(0, 1) curve. Include or reference density_vs_normal_2x3_grid.png -->
+- **Q-Q Plot Quantile Alignment:** Similarly to the graphs for density, there is no noticeable change not explained by randomness for the Q-Q plots. They demonstrate very linearly from n = 1.
+  <!-- Inspect the linearity in your exported Q-Q plots from qq_plots_by_n/. -->
+
+### Statistical Evidence (Shapiro-Wilk Test & Moment Ratios)
+
+```{r}
+#| label: tbl-normality-metrics
+#| tbl-cap: "Normality assessment metrics: Skewness, Kurtosis, and Shapiro-Wilk test."
+
+summary_table %>%
+  select(n, skewness, excess_kurtosis, shapiro_stat_W, shapiro_p_value) %>%
+  kable(col.names = c("n", "Skewness", "Excess Kurtosis", "Shapiro-Wilk W", "p-value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Conclusion on Normality:**
+  <!-- Summarize when the distribution meets practical and formal normality thresholds. -->
+  Looking at this data we can see that from n=1, the data is very
+  normalized. The Shapiro-Wilk W of 0.9998 (approaches 1 at perfect
+  normality) is very high indicating a highly measurable normal. As
+  mentioned previously in this analysis, the skewness and excess
+  kurtosis readings are very close to 0 indicating a normalized curve.
+  The high p-value is evidence that we cannot reject the null hypothesis
+  of our distribution being normalized.
+
+------------------------------------------------------------------------
+
+## 7. Limitations and Surprises
+
+<!-- Question 7: What limitations or surprises did you observe? -->
+
+- **Key Observations / Surprises:** There were not really any surprises with this one. I was expecting the Monte Carlo randomness to provide more variability but possibly in other set seeds there is more.
+  <!-- e.g., persistent tail skewness, boundary effects, Shapiro-Wilk p-value sensitivity to large sample sizes, etc. -->
+- **Simulation Limitations:** I don't think there were many limitations associated with this distribution as the data appeared to converge right away. If there was a limit to Monte Carlo reps maybe a lower number would not have such a smoothing effect and it would show visually and statistically. 
+  <!-- e.g., finite Monte Carlo reps B = 10,000, fixed selection of n_values, truncation of sub-sample size for normality testing. -->
+
+------------------------------------------------------------------------
+
+## 8. Final Verdict
+
+#### Central Limit Theorem Confirmed at *n = 1*
+
+Unsurprisingly the Standard Normal distribution conforms to central
+limit theorem from n=1. Based on both visual analysis and statistical
+analysis I feel comfortable confirming this fact.

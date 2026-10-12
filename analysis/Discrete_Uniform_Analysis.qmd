@@ -1,0 +1,266 @@
+---
+title: "Central Limit Theorem Analysis: Six-Sided Die (Discrete Uniform)"
+author: "Sam Hubler"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+# --- CONFIGURATION ---
+# Set the name of the target distribution matching your simulation[cite: 3]
+TARGET_DIST <- "six_sided_die" 
+
+# Adjust output directory path to match where your files were written[cite: 3]
+data_dir <- "~/SJSU26F/MATH167R/CLT/data/six_sided_die"
+
+# Load saved simulation dataset and add necessary columns for tables[cite: 3]
+summary_table <- read.csv(file.path(data_dir, "die_metrics.csv")) %>%
+  mutate(
+    mean_bias = sim_mean - theo_mean,
+    se_ratio = sim_se / theo_se
+  )
+```
+
+## 1. Original Population Distribution
+
+<!-- Question 1: What does the original population distribution look like? -->
+
+- **Name / Class:** `r TARGET_DIST`
+- **Type:** Discrete uniform on {1,2,3,4,5,6}
+- **Description:**
+  <!-- Describe features: continuity, boundedness, symmetry/skewness, support, unimodal vs multimodal, etc. -->
+  The discrete uniform distribution represents 6 unique but independent
+  outcomes that are equally likely. A great example of this is a dice
+  roll. The outcomes are discrete and uniform across the different
+  numbers.
+
+```{r}
+#| label: fig-population-shape
+#| fig-cap: "Theoretical / baseline shape of the population distribution (n = 1)."
+
+data.frame(x = 1:6, prob = 1/6) %>%
+  ggplot(aes(x = factor(x), y = prob)) +
+  geom_col(fill = "#D55E00", color = "black", alpha = 0.8) +
+  labs(
+    title = paste("Population Mass:", TARGET_DIST),
+    x = "Die Outcome",
+    y = "Probability"
+  ) +
+  theme_bw()
+```
+
+------------------------------------------------------------------------
+
+## 2. Theoretical Mean and Standard Deviation
+
+- **Theoretical Mean (**$\mu$): 3.5\[cite: 3\]
+- **Theoretical Standard Deviation (**$\sigma$):
+  `r round(sqrt(35/12), 4)`\[cite: 3\]
+
+For a Discrete Uniform distribution spanning integers $a$ to $b$, the
+probabilities are equal for all outcomes.
+
+The theoretical mean is calculated as:
+
+$$\mu = \frac{a + b}{2} = \frac{1 + 6}{2} = 3.5$$
+
+The theoretical standard deviation is derived from the variance:
+
+$$\sigma = \sqrt{\frac{(b - a + 1)^2 - 1}{12}} = \sqrt{\frac{6^2 - 1}{12}} = \sqrt{\frac{35}{12}} \approx 1.7078$$
+
+------------------------------------------------------------------------
+
+## 3. Rate of Convergence to Normality
+
+<!-- Question 3: How quickly does the sampling distribution become approximately normal? -->
+
+- **Observations across sample sizes (**$n$):
+  <!-- At what sample size n does skewness drop close to 0? Kurtosis near 0? --> Looking at the chart visually we can see that excess kurtosis and skewness approach 0 very quickly. As this is a uniform discrete distribution, there is not much inherent skewness to push the sample mean distribution to one side. 
+
+```{r}
+#| label: fig-shape-statistics
+#| fig-cap: "Convergence of Skewness and Excess Kurtosis toward zero as sample size increases."
+
+summary_table %>%
+  pivot_longer(cols = c(skewness, excess_kurtosis), names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = n, y = value, color = metric)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("skewness" = "orange", "excess_kurtosis" = "blue")) +
+  labs(
+    title = paste("Shape Statistics vs. n for", TARGET_DIST),
+    x = "Sample Size (n)",
+    y = "Metric Value",
+    color = "Metric"
+  ) +
+  theme_bw()
+```
+
+------------------------------------------------------------------------
+
+## 4. Simulated Mean vs. Theoretical Mean
+
+<!-- Question 4: How does the simulated mean compare with the theoretical mean? --> The simulated mean and theoretical mean show us if our Monte Carlo simulation model is behaving as expected.
+
+```{r}
+#| label: tbl-mean-comparison
+#| tbl-cap: "Comparison of simulated sample means vs. theoretical mean."
+
+summary_table %>%
+  select(n, theo_mean, sim_mean, mean_bias) %>%
+  kable(col.names = c("n", "Theoretical Mean (μ)", "Simulated Mean (X̄)", "Mean Bias (X̄ - μ)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the empirical mean stay close to the theoretical mean across all n? Is there any noticeable bias? --> As the bias is very close to 0 during the increase in sample mean sizes, we can say that the bias is very low and can trust that our model is predicting correctly. 
+
+------------------------------------------------------------------------
+
+## 5. Simulated Standard Error vs. Theoretical Standard Error
+
+<!-- Question 5: How does the simulated standard error compare with SE(X̄) = σ / √n? -->
+
+$$\text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}}$$
+
+```{r}
+#| label: tbl-se-comparison
+#| tbl-cap: "Comparison of simulated standard errors with theoretical SE = σ / √n."
+
+summary_table %>%
+  select(n, theo_se, sim_se, se_ratio) %>%
+  kable(col.names = c("n", "Theoretical SE", "Simulated SE", "SE Ratio (Sim / Theo)")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Analysis:**
+  <!-- Does the ratio sim_se / theo_se remain close to 1.0? Does the empirical spread decay at rate 1 / √n? --> A simulated standard error and theoretical standard error ratio of 1 means that our model is an ideal benchmark and that we can can draw conclusions from it. Above it can be seen that it has some small variance but never strays too far from the ideal ratio of 1.0.
+
+------------------------------------------------------------------------
+
+## 6. Evidence for Normality
+
+<!-- Question 6: What evidence supports your conclusion that the distribution is—or is not—approximately normal? -->
+
+### Graphical Evidence (Density & Q-Q Plots)
+
+```{r}
+#| label: fig-normal-dist-qq
+#| fig-cap: "Standardized empirical density and Normal Q-Q plots across selected sample sizes $n$ ($B = 10{,}000$)."
+#| fig-width: 10
+#| fig-height: 7
+#| fig-align: "center"
+#| warning: false
+#| message: false
+
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+set.seed(8676)
+
+B <- 10000L
+selected_n <- c(1, 5, 10, 15)
+
+density_qq_list <- list()
+
+for (n_val in selected_n) {
+  observations <- sample.int(6L, size = B * n_val, replace = TRUE)
+  sample_matrix <- matrix(observations, nrow = B, ncol = n_val)
+  means <- rowMeans(sample_matrix)
+  
+  sim_mean <- mean(means)
+  sim_se <- sd(means)
+  
+  z_means <- if (is.finite(sim_se) && sim_se > 0) (means - sim_mean) / sim_se else rep(NA_real_, B)
+  density_qq_list[[length(density_qq_list) + 1]] <- data.frame(
+    n_label = paste0("n = ", n_val),
+    n_num = n_val,
+    z = z_means
+  )
+}
+
+plot_data <- bind_rows(density_qq_list) %>% filter(is.finite(z))
+plot_data$n_label <- factor(plot_data$n_label, levels = paste0("n = ", selected_n))
+
+tight_theme <- theme_bw(base_size = 11) +
+  theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 10, face = "bold"),
+    plot.margin = margin(t = 4, r = 6, b = 4, l = 6)
+  )
+
+p_dens_tight <- ggplot(plot_data, aes(x = z)) +
+  geom_density(fill = "#D55E00", alpha = 0.35, color = "#D55E00", linewidth = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1), linetype = "dashed", color = "black") +
+  facet_wrap(~ n_label, nrow = 2, scales = "free_y") +
+  labs(title = "Empirical Density vs N(0,1)", x = "Standardized Mean (Z)", y = "Density") +
+  tight_theme
+
+p_qq_tight <- ggplot(plot_data, aes(sample = z)) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray30") +
+  stat_qq(color = "#D55E00", alpha = 0.15, size = 0.8) +
+  facet_wrap(~ n_label, nrow = 2) +
+  labs(title = "Normal Q-Q Plots", x = "Theoretical Quantiles", y = "Sample Quantiles") +
+  tight_theme
+
+p_dens_tight | p_qq_tight
+```
+
+- **Density Overlays:**
+  <!-- Mention the alignment with the standard N(0, 1) curve. --> In the density overlays we can see the effect that the discrete outcomes has on the sample means, generating a lot of peaks. Unlike the binomial, the uniformity allows the peaks to disappear rather quickly. The only skewness is really at the top but with our simulation we cannot expect perfect uniformity, just like you cannot expect a perfect distribution of dice in a real game. 
+- **Q-Q Plot Quantile Alignment:**
+  <!-- Inspect the linearity in your Q-Q plots. --> The Q-Q plots show linearity after the first few sample mean steps. Due to the discrete nature of the distribution I wouldn't expect otherwise.
+
+### Statistical Evidence (Shapiro-Wilk Test & Moment Ratios)
+
+```{r}
+#| label: tbl-normality-metrics
+#| tbl-cap: "Normality assessment metrics: Skewness, Kurtosis, and Shapiro-Wilk test."
+
+summary_table %>%
+  select(n, skewness, excess_kurtosis, shapiro_W, shapiro_p) %>%
+  kable(col.names = c("n", "Skewness", "Excess Kurtosis", "Shapiro-Wilk W", "p-value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+- **Conclusion on Normality:**
+  <!-- Summarize when the distribution meets practical and formal normality thresholds. -->The discrete uniform distribution creates a very modal sample distribution immediately, presenting a low skewness value at just n = 1 samples. This does slowly converge, but compared to other distributions starts much closer to a desired value. Similar things can be said for the excess kurtosis, since it accounts for the peaks in the distribution it converges once the peaks start to go down. The p-value remains low due to the discrete nature of the distribution and while eventually it starts to grow I feel comfortable choosing low n sample sizes. The Shaprio-Wilk W value tells the real story, after just a few steps it gets very close to 1.0 indicating a very normal distribution. 
+
+------------------------------------------------------------------------
+
+## 7. Limitations and Surprises
+
+<!-- Question 7: What limitations or surprises did you observe? -->
+
+- **Key Observations / Surprises:**
+  <!-- e.g., persistent tail skewness, boundary effects, Shapiro-Wilk p-value sensitivity to large sample sizes, etc. -->This distribution behaved about as expected. The distribution becomes very average due to the equal probability outcomes for all results which means it centers around a mean. I was surprised to see how quickly the graph peaks disappear when compared to the binomial distribution (another discrete distribution). 
+- **Simulation Limitations:**
+  <!-- e.g., finite Monte Carlo reps B = 10,000, fixed selection of n_values, truncation of sub-sample size for normality testing. -->I think the Monte Carlo simulation had a large effect and more truly represents the real life chances of a perfect distribution. With an extremely large sample size there may not be as many peaks. Even towards higher, more normal sample sizes you can see that there are some peaks towards the center. Still this distribution presents low skewness, as to be expected. 
+
+------------------------------------------------------------------------
+
+## 8. Final Verdict
+
+#### Central Limit Theorem Confirmed at *n = 10*
+
+<!-- Final thoughts on convergence --> I decided to go with n = 10 because while graphically there are still some peaks, statistically it shows viability with a high Shapiro-Wilk W score. The jump from 5 to 10 sample size shows a large decrease in excess kurtosis that seems like enough of a convergence point. I think in a perfect world, I would choose a sample size lower. The variability of the simulation decreased my confidence but I think that n = 10 is the right choice for convergence on both statistical and visual factors.
