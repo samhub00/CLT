@@ -1,0 +1,145 @@
+---
+title: "Prompts and Iterations Used to Generate This Project"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+## Getting the code running
+
+Starting prompt (GPT-5.6 Luna Medium) : *I am doing a project where I am
+investigating the central limit theorem and I need to see the smallest
+sample mean value. The goal: Generate 10 graphs, two for each
+distribution being tested. One graph will show kurtosis with sample mean
+as the x axis and one will show skewness with sample mean as the x axis.
+There need to be 10 individual graphs. I am working in R and the
+distributions being tested are: generators \<- list( `Standard Normal` =
+function(size) { rnorm(size, mean = 0, sd = 1) }, `Six-Sided Die` =
+function(size) { sample.int(6L, size = size, replace = TRUE) },
+Exponential = function(size) { rexp(size, rate = exp_rate) },
+`R-Binomial` = function(size) { rbinom(size, size = binom_size, prob =
+binom_prob) }, Cauchy = function(size) { rcauchy(size, location = 0,
+scale = 1) } )*
+
+This generated the start of my project. At first I had code that would
+output all of the kurtosis and skewness plots on top of eachother and
+because of the Cauchy distribution, all the other small values were
+washed out. I needed something different.
+
+I switched to Gemini 3.8 Flash
+
+1.  *I need help with some R code. The code currently generates multiple
+    plots inside one graph. I need it to instead generate multiple
+    graphs (2X3) instead of 1 single graph. Here is my code please edit
+    as necessary*
+
+2.  *This is closer, I need the graph sizes to be parametric to each
+    plot so they fully represent what is going on. Is a loop the best
+    method for this?*
+
+After getting it working with some small prompts I added the Q-Q chart
+
+3.  *what is another graph that might help determine the approach to
+    normality for a distribution in reference to central limit theorem*
+
+    (generated the Q-Q plot code)
+
+<!-- -->
+
+4.  *can you make it so that the qq plots are saved for every n value
+    and output as so? For example qq plot 1 and it contains all the
+    distributions but only the n, and do that for every n value?*
+
+```         
+adding more statistics for analysis
+```
+
+5.  
+
+*can you implement measures for these and put them in a table for all of
+the distributions through the sample mean sizes. What does the original
+population distribution look like? What are its theoretical mean and
+standard deviation? How quickly does the sampling distribution become
+approximately normal? How does the simulated mean compare with the
+theoretical mean? How does the simulated standard error compare with
+What evidence supports your conclusion that the distribution is—or is
+not—approximately normal?*
+
+- these were questions copy pasted from one of the information documents
+  about the project
+
+- They generated the normality and goodness of fit tests like the
+  Shapiro-Wilk W and p value outputs
+
+6.  I then prompted it to remove some of the AI slop added things. It
+    was encroaching on my ability to perform analysis myself and I made
+    sure to stop it.
+
+## Starting the analysis
+
+1.  Methodologies:
+
+*Visual Fitting ( comparing the sample mean distributions of each
+testing distribution at different stages of n)*
+
+*Visual (graphs for skewness, qq, kurtosis etc)*
+
+*Statistical Theoretical mean and standard deviation Simulated mean vs
+theoretical mean simulated standard error vs SE*
+
+*Write an example methodologies section for me going into each of these
+listed above. Start a .qmd document and add the results there*
+
+- This was the start of my CLT Framework document where I overview the
+  project and add the things I would be investigating on.
+
+## Circling back to making the separate scripts
+
+*Using this code as a template, generate me 5 individual R scripts (one
+for each distribution). In these individual scripts I want the plots for
+kurtosis and skewness and qq plots and others to only be for the
+individual distribution associated with each script. The plots should
+output onto one png all together. In addition to that I would like the
+distribution to be plotted against a normal distribution for each sample
+size. Each script should only contain plots and tables related to the
+distribution it is for and none else. The X and Y on charts shoule be
+appropriately scaled, not universally scaled.*
+
+This prompt gave me 5 fairly complete documents that I could use to do
+analysis on. I was not done yet however and had to make the document to
+actually contain the analysis.
+
+## Creating the separate analysis documents
+
+*Using this code as a template, generate me 5 individual R scripts (one
+for each distribution). In these individual scripts I want the plots for
+kurtosis and skewness and qq plots and others to only be for the
+individual distribution associated with each script. The plots should
+output onto one png all together. In addition to that I would like the
+distribution to be plotted against a normal distribution for each sample
+size. Each script should only contain plots and tables related to the
+distribution it is for and none else. The X and Y on charts shoule be
+appropriately scaled, not universally scaled.*
+
+This prompt generated the first analysis document which I formatted with
+some help from the AI, asking it to add or drop small random things. One
+bigger challenge was getting it to add working code to the documents and
+I had a 30 minute frustrating session of errors that were resolved once
+I realized I had created a typo.
+
+With this boilerplate document, I ran the prompt:
+
+*Taking this boiler plate example, create 4 more analysis documents for
+each of the 4 other distributions*
+
+This got me very close to the end product for analysis.
+
+The rest of the project was finished by me filling in the blanks, making
+sure the labels were correct and asking it to generate one final
+analysis synthesis document.
+
+The document it generated was a bit too specific and injected a lot of
+analysis that was not my own so I asked it to shorten down the document
+and made sure there was nothing that I couldn't explain or was not my
+own opinion.
