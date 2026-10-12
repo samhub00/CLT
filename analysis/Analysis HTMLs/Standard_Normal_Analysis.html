@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Sam Hubler">
+<meta name="dcterms.date" content="2026-10-11">
+
+<title>Central Limit Theorem Analysis: Standard Normal Distribution</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Standard_Normal_Analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Standard_Normal_Analysis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Standard_Normal_Analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Standard_Normal_Analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="Standard_Normal_Analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Standard_Normal_Analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Standard_Normal_Analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Standard_Normal_Analysis_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Standard_Normal_Analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Standard_Normal_Analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Standard_Normal_Analysis_files/libs/bootstrap/bootstrap-8ffd5f67044e5306d9846f29df41dda5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="Standard_Normal_Analysis_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="Standard_Normal_Analysis_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#original-population-distribution" id="toc-original-population-distribution" class="nav-link active" data-scroll-target="#original-population-distribution">1. Original Population Distribution</a></li>
+  <li><a href="#theoretical-mean-and-standard-deviation" id="toc-theoretical-mean-and-standard-deviation" class="nav-link" data-scroll-target="#theoretical-mean-and-standard-deviation">2. Theoretical Mean and Standard Deviation</a></li>
+  <li><a href="#rate-of-convergence-to-normality" id="toc-rate-of-convergence-to-normality" class="nav-link" data-scroll-target="#rate-of-convergence-to-normality">3. Rate of Convergence to Normality</a></li>
+  <li><a href="#simulated-mean-vs.-theoretical-mean" id="toc-simulated-mean-vs.-theoretical-mean" class="nav-link" data-scroll-target="#simulated-mean-vs.-theoretical-mean">4. Simulated Mean vs.&nbsp;Theoretical Mean</a></li>
+  <li><a href="#simulated-standard-error-vs.-theoretical-standard-error" id="toc-simulated-standard-error-vs.-theoretical-standard-error" class="nav-link" data-scroll-target="#simulated-standard-error-vs.-theoretical-standard-error">5. Simulated Standard Error vs.&nbsp;Theoretical Standard Error</a></li>
+  <li><a href="#evidence-for-normality" id="toc-evidence-for-normality" class="nav-link" data-scroll-target="#evidence-for-normality">6. Evidence for Normality</a>
+  <ul class="collapse">
+  <li><a href="#graphical-evidence-density-q-q-plots" id="toc-graphical-evidence-density-q-q-plots" class="nav-link" data-scroll-target="#graphical-evidence-density-q-q-plots">Graphical Evidence (Density &amp; Q-Q Plots)</a></li>
+  <li><a href="#statistical-evidence-shapiro-wilk-test-moment-ratios" id="toc-statistical-evidence-shapiro-wilk-test-moment-ratios" class="nav-link" data-scroll-target="#statistical-evidence-shapiro-wilk-test-moment-ratios">Statistical Evidence (Shapiro-Wilk Test &amp; Moment Ratios)</a></li>
+  </ul></li>
+  <li><a href="#limitations-and-surprises" id="toc-limitations-and-surprises" class="nav-link" data-scroll-target="#limitations-and-surprises">7. Limitations and Surprises</a></li>
+  <li><a href="#final-verdict" id="toc-final-verdict" class="nav-link" data-scroll-target="#final-verdict">8. Final Verdict</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Central Limit Theorem Analysis: Standard Normal Distribution</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Sam Hubler </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 11, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="original-population-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="original-population-distribution">1. Original Population Distribution</h2>
+<!-- Question 1: What does the original population distribution look like? -->
+<ul>
+<li><strong>Name / Class:</strong> standard_normal</li>
+<li><strong>Type:</strong> Continuous, symmetric, bell-shaped</li>
+<li><strong>Description:</strong> The standard normal distribution is a special and simplified type of normal distribution where the mean is 0 and the standard deviation is 1. This distribution adheres to the empirical rule which states that ~68% of data falls within one standard deviation of the mean, ~95% of data falls within two standard deviations of the mean and ~99.7% of data falls within three standard deviations of the mean. It is also the pillar of the central limit theorem and the distribution which we are trying to show other sample distributions become as the n of samples gets larger. <!-- Describe features: continuity, boundedness, symmetry/skewness, support, unimodal vs multimodal, etc. --></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example population plot (n = 1)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># You can customize this plot based on your chosen distribution</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">1</span>), <span class="at">color =</span> <span class="st">"#009E73"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Population Density:"</span>, TARGET_DIST),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"x"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-population-shape" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-population-shape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Standard_Normal_Analysis_files/figure-html/fig-population-shape-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-population-shape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Theoretical / baseline shape of the population distribution (n = 1).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="theoretical-mean-and-standard-deviation" class="level2">
+<h2 class="anchored" data-anchor-id="theoretical-mean-and-standard-deviation">2. Theoretical Mean and Standard Deviation</h2>
+<ul>
+<li><strong>Theoretical Mean (</strong><span class="math inline">\(\mu\)</span>): 0</li>
+<li><strong>Theoretical Standard Deviation (</strong><span class="math inline">\(\sigma\)</span>): 1</li>
+</ul>
+<p>For a Standard Normal distribution <span class="math inline">\(X \sim \mathcal{N}(0, 1)\)</span>, the PDF is:</p>
+<p><span class="math display">\[f(x) = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}\]</span></p>
+<p>The theoretical mean is calculated as:</p>
+<p><span class="math display">\[\mu = \text{E}[X] = \int_{-\infty}^{\infty} x \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}} \, dx = \frac{1}{\sqrt{2\pi}} \left[ -e^{-\frac{x^2}{2}} \right]_{-\infty}^{\infty} = 0\]</span></p>
+<p>The theoretical standard deviation is:</p>
+<p><span class="math display">\[\sigma = \sqrt{\text{Var}(X)} = \sqrt{\text{E}[X^2] - (\text{E}[X])^2} = \sqrt{1 - 0^2} = 1\]</span></p>
+<hr>
+</section>
+<section id="rate-of-convergence-to-normality" class="level2">
+<h2 class="anchored" data-anchor-id="rate-of-convergence-to-normality">3. Rate of Convergence to Normality</h2>
+<!-- Question 3: How quickly does the sampling distribution become approximately normal? -->
+<ul>
+<li><strong>Observations across sample sizes (</strong><span class="math inline">\(n\)</span>): In the graph the red line represents kurtosis while the blue line represents skewness. Kurtosis is a statistic used to calculate the height of a distribution, where 0 is standard, and skewness is used to calculate the left or right bias that a distribution may have. As we can see here below, both kurtosis and skewness are very close to zero throughout the entire set of sample sizes. <!-- At what sample size n does skewness drop close to 0? Kurtosis near 0? --></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shape_data <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(skewness, excess_kurtosis), <span class="at">names_to =</span> <span class="st">"metric"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y =</span> value, <span class="at">color =</span> metric)) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Shape Statistics vs. n for"</span>, TARGET_DIST),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample Size (n)"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Metric Value"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Metric"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-shape-statistics" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-shape-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Standard_Normal_Analysis_files/figure-html/fig-shape-statistics-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shape-statistics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Convergence of Skewness and Excess Kurtosis toward zero as sample size increases.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Important to note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>While the kurtosis and skewness plots show a lot of variation, the range is quite small!</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="simulated-mean-vs.-theoretical-mean" class="level2">
+<h2 class="anchored" data-anchor-id="simulated-mean-vs.-theoretical-mean">4. Simulated Mean vs.&nbsp;Theoretical Mean</h2>
+<p>The simulated mean and theoretical mean show us if our Monte Carlo simulation model is behaving as expected. <!-- Question 4: How does the simulated mean compare with the theoretical mean? --></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n, theo_mean, sim_mean, mean_bias) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"n"</span>, <span class="st">"Theoretical Mean (μ)"</span>, <span class="st">"Simulated Mean (X̄)"</span>, <span class="st">"Mean Bias (X̄ - μ)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-mean-comparison" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mean-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Comparison of simulated sample means vs.&nbsp;theoretical mean.
+</figcaption>
+<div aria-describedby="tbl-mean-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Theoretical Mean (μ)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Simulated Mean (X̄)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean Bias (X̄ - μ)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0140</td>
+<td style="text-align: right;">0.0140</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.0010</td>
+<td style="text-align: right;">-0.0010</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0009</td>
+<td style="text-align: right;">0.0009</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0002</td>
+<td style="text-align: right;">0.0002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.0007</td>
+<td style="text-align: right;">-0.0007</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0010</td>
+<td style="text-align: right;">0.0010</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.0004</td>
+<td style="text-align: right;">-0.0004</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.0016</td>
+<td style="text-align: right;">-0.0016</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.0009</td>
+<td style="text-align: right;">-0.0009</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.0003</td>
+<td style="text-align: right;">-0.0003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0015</td>
+<td style="text-align: right;">0.0015</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0003</td>
+<td style="text-align: right;">0.0003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<ul>
+<li><strong>Analysis:</strong> <!-- Does the empirical mean stay close to the theoretical mean across all n? Is there any noticeable bias? --> With a general bias of 0 we can say that our model is indeed predicting correctly, there is not a large amount of bias in this simulation.</li>
+</ul>
+<hr>
+</section>
+<section id="simulated-standard-error-vs.-theoretical-standard-error" class="level2">
+<h2 class="anchored" data-anchor-id="simulated-standard-error-vs.-theoretical-standard-error">5. Simulated Standard Error vs.&nbsp;Theoretical Standard Error</h2>
+<!-- Question 5: How does the simulated standard error compare with SE(X̄) = σ / √n? -->
+<p><span class="math display">\[\text{SE}(\bar{X}) = \frac{\sigma}{\sqrt{n}}\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n, theo_se, sim_se, se_ratio) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"n"</span>, <span class="st">"Theoretical SE"</span>, <span class="st">"Simulated SE"</span>, <span class="st">"SE Ratio (Sim / Theo)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-se-comparison" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-se-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Comparison of simulated standard errors with theoretical SE = σ / √n.
+</figcaption>
+<div aria-describedby="tbl-se-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Theoretical SE</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Simulated SE</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">SE Ratio (Sim / Theo)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">1.0129</td>
+<td style="text-align: right;">1.0129</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.4472</td>
+<td style="text-align: right;">0.4506</td>
+<td style="text-align: right;">1.0077</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.3162</td>
+<td style="text-align: right;">0.3166</td>
+<td style="text-align: right;">1.0013</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.2582</td>
+<td style="text-align: right;">0.2620</td>
+<td style="text-align: right;">1.0146</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.2236</td>
+<td style="text-align: right;">0.2244</td>
+<td style="text-align: right;">1.0037</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.2000</td>
+<td style="text-align: right;">0.2018</td>
+<td style="text-align: right;">1.0089</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1826</td>
+<td style="text-align: right;">0.1833</td>
+<td style="text-align: right;">1.0038</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0.1581</td>
+<td style="text-align: right;">0.1588</td>
+<td style="text-align: right;">1.0042</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0.1414</td>
+<td style="text-align: right;">0.1416</td>
+<td style="text-align: right;">1.0012</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">0.1155</td>
+<td style="text-align: right;">0.1157</td>
+<td style="text-align: right;">1.0017</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: right;">0.0995</td>
+<td style="text-align: right;">0.9947</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">0.0816</td>
+<td style="text-align: right;">0.0819</td>
+<td style="text-align: right;">1.0026</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">0.0707</td>
+<td style="text-align: right;">0.0689</td>
+<td style="text-align: right;">0.9744</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<ul>
+<li><strong>Analysis:</strong> With a SE Ratio hovering around 1.0, the empirical variability of the simulation matches the theoretical variability. This means that the simulation is an ideal benchmark and that we can draw conclusions from it. <!-- Does the ratio sim_se / theo_se remain close to 1.0? Does the empirical spread decay at rate 1 / √n? --></li>
+</ul>
+<hr>
+</section>
+<section id="evidence-for-normality" class="level2">
+<h2 class="anchored" data-anchor-id="evidence-for-normality">6. Evidence for Normality</h2>
+<!-- Question 6: What evidence supports your conclusion that the distribution is—or is not—approximately normal? -->
+<section id="graphical-evidence-density-q-q-plots" class="level3">
+<h3 class="anchored" data-anchor-id="graphical-evidence-density-q-q-plots">Graphical Evidence (Density &amp; Q-Q Plots)</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8676</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span>L</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Selected subset of sample sizes to keep layout clean and tight</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>selected_n <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">100</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>density_qq_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (n_val <span class="cf">in</span> selected_n) {</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  observations <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(B <span class="sc">*</span> n_val, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  sample_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(observations, <span class="at">nrow =</span> B, <span class="at">ncol =</span> n_val)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  means <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(sample_matrix)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  sim_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(means)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  sim_se <span class="ot">&lt;-</span> <span class="fu">sd</span>(means)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  z_means <span class="ot">&lt;-</span> (means <span class="sc">-</span> sim_mean) <span class="sc">/</span> sim_se</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  density_qq_list[[<span class="fu">length</span>(density_qq_list) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_label =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, n_val),</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_num =</span> n_val,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">z =</span> z_means</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(density_qq_list)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>plot_data<span class="sc">$</span>n_label <span class="ot">&lt;-</span> <span class="fu">factor</span>(plot_data<span class="sc">$</span>n_label, <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, selected_n))</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Minimal shared styling for compact plots</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>tight_theme <span class="ot">&lt;-</span> <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">4</span>, <span class="at">r =</span> <span class="dv">6</span>, <span class="at">b =</span> <span class="dv">4</span>, <span class="at">l =</span> <span class="dv">6</span>)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Density Facets</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>p_dens_tight <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> z)) <span class="sc">+</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>, <span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">color =</span> <span class="st">"#0072B2"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> n_label, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Empirical Density vs N(0,1)"</span>, <span class="at">x =</span> <span class="st">"Standardized Mean (Z)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  tight_theme</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Q-Q Facets</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>p_qq_tight <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">sample =</span> z)) <span class="sc">+</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"#0072B2"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> n_label, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Normal Q-Q Plots"</span>, <span class="at">x =</span> <span class="st">"Theoretical Quantiles"</span>, <span class="at">y =</span> <span class="st">"Sample Quantiles"</span>) <span class="sc">+</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  tight_theme</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine side-by-side with tight layout</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>p_dens_tight <span class="sc">|</span> p_qq_tight</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-normal-dist-qq" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-normal-dist-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Standard_Normal_Analysis_files/figure-html/fig-normal-dist-qq-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="960">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-normal-dist-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Standardized empirical density and Normal Q-Q plots across selected sample sizes <span class="math inline">\(n\)</span> (<span class="math inline">\(B = 10{,}000\)</span>).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Density Overlays:</strong> As seen in the density charts, there is no noticeable change not explained by randomness as the sample size grows. <!-- Mention the alignment with the standard N(0, 1) curve. Include or reference density_vs_normal_2x3_grid.png --></li>
+<li><strong>Q-Q Plot Quantile Alignment:</strong> Similarly to the graphs for density, there is no noticeable change not explained by randomness for the Q-Q plots. They demonstrate very linearly from n = 1. <!-- Inspect the linearity in your exported Q-Q plots from qq_plots_by_n/. --></li>
+</ul>
+</section>
+<section id="statistical-evidence-shapiro-wilk-test-moment-ratios" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-evidence-shapiro-wilk-test-moment-ratios">Statistical Evidence (Shapiro-Wilk Test &amp; Moment Ratios)</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n, skewness, excess_kurtosis, shapiro_stat_W, shapiro_p_value) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"n"</span>, <span class="st">"Skewness"</span>, <span class="st">"Excess Kurtosis"</span>, <span class="st">"Shapiro-Wilk W"</span>, <span class="st">"p-value"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-normality-metrics" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-normality-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Normality assessment metrics: Skewness, Kurtosis, and Shapiro-Wilk test.
+</figcaption>
+<div aria-describedby="tbl-normality-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed cell caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Skewness</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Excess Kurtosis</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Shapiro-Wilk W</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-0.0059</td>
+<td style="text-align: right;">-0.0278</td>
+<td style="text-align: right;">0.9998</td>
+<td style="text-align: right;">0.95551</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0145</td>
+<td style="text-align: right;">0.0596</td>
+<td style="text-align: right;">0.9994</td>
+<td style="text-align: right;">0.10950</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.0314</td>
+<td style="text-align: right;">0.0266</td>
+<td style="text-align: right;">0.9994</td>
+<td style="text-align: right;">0.12111</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.0081</td>
+<td style="text-align: right;">-0.0326</td>
+<td style="text-align: right;">0.9997</td>
+<td style="text-align: right;">0.65538</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.0277</td>
+<td style="text-align: right;">0.0437</td>
+<td style="text-align: right;">0.9998</td>
+<td style="text-align: right;">0.97489</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">-0.0259</td>
+<td style="text-align: right;">-0.0348</td>
+<td style="text-align: right;">0.9997</td>
+<td style="text-align: right;">0.57169</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">-0.0182</td>
+<td style="text-align: right;">0.0004</td>
+<td style="text-align: right;">0.9997</td>
+<td style="text-align: right;">0.67643</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">-0.0322</td>
+<td style="text-align: right;">-0.0133</td>
+<td style="text-align: right;">0.9993</td>
+<td style="text-align: right;">0.04279</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">-0.0599</td>
+<td style="text-align: right;">0.0533</td>
+<td style="text-align: right;">0.9992</td>
+<td style="text-align: right;">0.02500</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">-0.0375</td>
+<td style="text-align: right;">-0.0666</td>
+<td style="text-align: right;">0.9996</td>
+<td style="text-align: right;">0.46728</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">-0.0309</td>
+<td style="text-align: right;">0.0492</td>
+<td style="text-align: right;">0.9993</td>
+<td style="text-align: right;">0.04158</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">0.0070</td>
+<td style="text-align: right;">-0.1049</td>
+<td style="text-align: right;">0.9996</td>
+<td style="text-align: right;">0.35534</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">-0.0287</td>
+<td style="text-align: right;">-0.0651</td>
+<td style="text-align: right;">0.9994</td>
+<td style="text-align: right;">0.12563</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<ul>
+<li><strong>Conclusion on Normality:</strong> <!-- Summarize when the distribution meets practical and formal normality thresholds. --> Looking at this data we can see that from n=1, the data is very normalized. The Shapiro-Wilk W of 0.9998 (approaches 1 at perfect normality) is very high indicating a highly measurable normal. As mentioned previously in this analysis, the skewness and excess kurtosis readings are very close to 0 indicating a normalized curve. The high p-value is evidence that we cannot reject the null hypothesis of our distribution being normalized.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="limitations-and-surprises" class="level2">
+<h2 class="anchored" data-anchor-id="limitations-and-surprises">7. Limitations and Surprises</h2>
+<!-- Question 7: What limitations or surprises did you observe? -->
+<ul>
+<li><strong>Key Observations / Surprises:</strong> There were not really any surprises with this one. I was expecting the Monte Carlo randomness to provide more variability but possibly in other set seeds there is more. <!-- e.g., persistent tail skewness, boundary effects, Shapiro-Wilk p-value sensitivity to large sample sizes, etc. --></li>
+<li><strong>Simulation Limitations:</strong> I don’t think there were many limitations associated with this distribution as the data appeared to converge right away. If there was a limit to Monte Carlo reps maybe a lower number would not have such a smoothing effect and it would show visually and statistically. <!-- e.g., finite Monte Carlo reps B = 10,000, fixed selection of n_values, truncation of sub-sample size for normality testing. --></li>
+</ul>
+<hr>
+</section>
+<section id="final-verdict" class="level2">
+<h2 class="anchored" data-anchor-id="final-verdict">8. Final Verdict</h2>
+<section id="central-limit-theorem-confirmed-at-n-1" class="level4">
+<h4 class="anchored" data-anchor-id="central-limit-theorem-confirmed-at-n-1">Central Limit Theorem Confirmed at <em>n = 1</em></h4>
+<p>Unsurprisingly the Standard Normal distribution conforms to central limit theorem from n=1. Based on both visual analysis and statistical analysis I feel comfortable confirming this fact.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
